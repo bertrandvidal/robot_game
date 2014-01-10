@@ -16,16 +16,20 @@ class Robot(object):
     closest = min((dist, index) for (index, dist) in enumerate(distances))
     return positions[closest[1]]
 
-  def weakest(self, game):
-    # return the weakest ennemy directly around
+  def opponents_around(self, game):
+    # return the opponents directly around the robot
     around = rg.locs_around(self.location, filter_out=("invalid"))
-    opponents = [game.robots[pos] for pos in around
-                 if pos in game.robots
-                 and game.robots[pos].robot_id != self.player_id]
-    if opponents:
-      weakest = sorted(opponents, key=lambda x: x.hp)[0]
-      return weakest
-    return None
+    robots_around = [game.robots[pos] for pos in around if pos in game.robots]
+    return [robot for robot in robots_around if "robot_id" not in robot]
+
+  def weakest_opponent(self, game):
+    # return the weakest ennemy directly around or None if there is no
+    # opponent around
+    opponents = sorted(self.opponents_around(game), key=lambda x: x["hp"])
+    return opponents[0] if opponents else None
+
+  def is_surrended(self, game):
+    return len(self.opponents_around(game)) == 4
 
   def act(self, game):
     # We don't want to die during spawn turns so we move to an empty
@@ -41,7 +45,10 @@ class Robot(object):
     position = rg.toward(self.location, self.closest(self.DIRECTION))
     position = self.closest(around, position)
     action = "move"
-    weakest = self.weakest(game)
+    if self.is_surrended(game):
+      return ["suicide"]
+    # Attack the weakest opponent around if any
+    weakest = self.weakest_opponent(game)
     if weakest:
       return ["attack", weakest.location]
     return [action, position]
