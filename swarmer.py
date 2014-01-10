@@ -1,4 +1,5 @@
 import rg
+import random
 
 class Robot(object):
 
@@ -40,9 +41,9 @@ class Robot(object):
         return ["move", empty_pos[0]]
       else:
         return ["suicide"]
-    # Move to the closest "quarter"
+    # Move to one of the "quarters"
     around = rg.locs_around(self.location, filter_out=("obstacle", "invalid"))
-    position = rg.toward(self.location, self.closest(self.DIRECTION))
+    position = rg.toward(self.location, random.choice(self.DIRECTION))
     position = self.closest(around, position)
     action = "move"
     if self.is_surrended(game):
