@@ -48,9 +48,15 @@ class Robot(object):
     action = "move"
     if self.is_surrended(game):
       return ["suicide"]
+    # By the end we guard if we have low hp
+    if 0 < self.hp < 15 and (rg.settings.max_turns - game.turn) < 5:
+      return ["guard"]
     # Attack the weakest opponent around if any
     weakest = self.weakest_opponent(game)
     if weakest:
+      # We go KABOOOOOM if we're low on hp!!
+      if self.hp < 10:
+        return ["suicide"]
       return ["attack", weakest.location]
     return [action, position]
 
