@@ -19,10 +19,12 @@ class Robot(object):
   def weakest(self, game):
     # return the weakest ennemy directly around
     around = rg.locs_around(self.location, filter_out=("invalid"))
-    opponents = [game.robots[pos] for pos in around if pos in game.robots and game.robots[pos].robot_id != self.player_id]
+    opponents = [game.robots[pos] for pos in around
+                 if pos in game.robots
+                 and game.robots[pos].robot_id != self.player_id]
     if opponents:
       weakest = sorted(opponents, key=lambda x: x.hp)[0]
-      return weakest.location
+      return weakest
     return None
 
   def act(self, game):
@@ -41,6 +43,6 @@ class Robot(object):
     action = "move"
     weakest = self.weakest(game)
     if weakest:
-      return ["attack", weakest]
+      return ["attack", weakest.location]
     return [action, position]
 
