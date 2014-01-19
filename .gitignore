@@ -35,5 +35,9 @@ nosetests.xml
 .project
 .pydevproject
 
-# Directory containing the kit to test
-kit
+# Virtualenv dir
+env/
+
+# vim file
+*.swp
+
