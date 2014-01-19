@@ -29,7 +29,7 @@ class Robot(object):
     opponents = sorted(self.opponents_around(game), key=lambda x: x["hp"])
     return opponents[0] if opponents else None
 
-  def is_surrended(self, game):
+  def is_surrounded(self, game):
     return len(self.opponents_around(game)) == 4
 
   def act(self, game):
@@ -46,7 +46,7 @@ class Robot(object):
     position = rg.toward(self.location, random.choice(self.DIRECTION))
     position = self.closest(around, position)
     action = "move"
-    if self.is_surrended(game):
+    if self.is_surrounded(game):
       return ["suicide"]
     # By the end we guard if we have low hp
     if 0 < self.hp < 15 and (rg.settings.max_turns - game.turn) < 5:
